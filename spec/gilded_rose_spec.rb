@@ -51,14 +51,12 @@ describe GildedRose do
       # expect(items[1].quality).to eq (50)
     end
 
-    # NEED: deal with Sulfuras quality not decreasing from 80
-    # NEED: to deal with Sulfuras sell by date remaining at 0
-    # it "Sulfuras has quality of 80 that never decreases" do
-    #   items = [Item.new("Sulfuras", 0, 80)]
-    #   GildedRose.new(items).update_quality()
-    #   expect(items[0].quality).to eq (80)
-      # expect(items[0].sell_in).to eq (0)
-    # end
+    it "Sulfuras has quality of 80 that never decreases" do
+      items = [Item.new("Sulfuras, Hand of Ragnaros", 0, 80)]
+      GildedRose.new(items).update_quality()
+      expect(items[0].quality).to eq (80)
+      expect(items[0].sell_in).to eq (0)
+    end
 
     it "Backstage passes to a TAFKAL80ETC concert increases in quality as SellIn value approaches but drops to zero after SellIn. 
         5 days or less to SellIn: +3 quality points
