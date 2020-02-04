@@ -90,5 +90,11 @@ describe GildedRose do
       expect(items[1].quality).to eq (46)
     end
 
+    it "conjured items reduce by 1 in sell_in date when update_quality is run" do
+      items = [Item.new("conjured", 50, 50)]
+      GildedRose.new(items).update_quality()
+      expect(items[0].sell_in).to eq (49)
+    end
+
   end
 end
