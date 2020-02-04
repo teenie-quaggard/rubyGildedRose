@@ -74,13 +74,12 @@ describe GildedRose do
       expect(items[3].quality).to eq (0)
     end
   
-    # NEED: to deal with conjured items
-    # it "conjured items degrade in Quality twice as fast as normal items" do
-    #   items = [Item.new("conjured", 50, 50), Item.new("conjured", 0, 50)]
-    #   GildedRose.new(items).update_quality()
-    #   expect(items[0].quality).to eq (48)
-    #   expect(items[1].quality).to eq (46)
-    # end
+    it "conjured items degrade in Quality twice as fast as normal items" do
+      items = [Item.new("conjured", 50, 50), Item.new("conjured", -1, 50)]
+      GildedRose.new(items).update_quality()
+      expect(items[0].quality).to eq (48)
+      expect(items[1].quality).to eq (46)
+    end
 
   end
 end
