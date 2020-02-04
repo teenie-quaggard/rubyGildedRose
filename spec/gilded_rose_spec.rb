@@ -29,12 +29,17 @@ describe GildedRose do
       expect(items[0].quality).to eq (8)
     end
 
-    # NEED: to deal with negative quality input in item constructor
     it "quality should never be negative" do
-      items = [Item.new("foo", 0, 0), Item.new("foo", 0, -1)]
+      items = [Item.new("foo", 0, 0)]
+      GildedRose.new(items).update_quality()
       GildedRose.new(items).update_quality()
       expect(items[0].quality).to eq (0)
-      # expect(items[1].quality).to eq (0)
+    end
+
+    xit "if item is provided a negative quality value, it will return a quality of 0" do
+      items = [Item.new("foo", 0, -1)]
+      GildedRose.new(items).update_quality()
+      expect(items[0].quality).to eq (0)
     end
 
     it "Aged Brie increases in quality the older it gets" do
@@ -43,12 +48,16 @@ describe GildedRose do
       expect(items[0].quality).to eq (11)
     end
 
-    # NEED:to deal with negative quality input in item constructor
     it "the quality of an item is never more than 50" do
-      items = [Item.new("Aged Brie", 50, 50), Item.new("foo", 50, 55)]
+      items = [Item.new("Aged Brie", 50, 50)]
       GildedRose.new(items).update_quality()
       expect(items[0].quality).to eq (50)
-      # expect(items[1].quality).to eq (50)
+    end
+
+    xit "if an item is provided with a quality value over 50, it will return a quality of 50" do
+      items = [Item.new("foo", 50, 55)]
+      GildedRose.new(items).update_quality()
+      expect(items[0].quality).to eq (50)
     end
 
     it "Sulfuras has quality of 80 that never decreases" do
