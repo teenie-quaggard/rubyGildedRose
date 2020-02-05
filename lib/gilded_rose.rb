@@ -10,6 +10,12 @@ class GildedRose
   BACKSTAGE_PASS = "Backstage passes to a TAFKAL80ETC concert"
   SULFURAS = "Sulfuras, Hand of Ragnaros"
 
+  def update_shop
+    @items.each do |item|
+      update_items(item)
+    end
+  end
+
   def reduce_sell_in(item)
     item.sell_in -= 1
   end
@@ -42,43 +48,40 @@ class GildedRose
       
   end
 
-  def update_quality()
-
-    @items.each do |item|
-      if item.name == CONJURED
-        conjuredItem(item)
-      elsif item.name != AGED_BRIE and item.name != BACKSTAGE_PASS
-        if item.quality > 0
-          if item.name != SULFURAS
-            change_quality(item, "subtract", 1)
+  def update_items(item)
+    if item.name == CONJURED
+      conjuredItem(item)
+    elsif item.name != AGED_BRIE and item.name != BACKSTAGE_PASS
+      if item.quality > 0
+        if item.name != SULFURAS
+          change_quality(item, "subtract", 1)
+        end
+      end
+    else
+      if item.quality < 50 && item.name != CONJURED
+        change_quality(item, "add", 1)
+        if item.name == BACKSTAGE_PASS
+          backstagePass(item)
+        end
+      end
+    end
+    if item.name != SULFURAS
+      reduce_sell_in(item)
+    end
+    if item.sell_in < 0 && item.name != CONJURED
+      if item.name != AGED_BRIE
+        if item.name != BACKSTAGE_PASS
+          if item.quality > 0
+            if item.name != SULFURAS
+              change_quality(item, "subtract", 1)
+            end
           end
+        else
+          change_quality(item, "subtract", item.quality)
         end
       else
         if item.quality < 50 && item.name != CONJURED
           change_quality(item, "add", 1)
-          if item.name == BACKSTAGE_PASS
-            backstagePass(item)
-          end
-        end
-      end
-      if item.name != SULFURAS
-        reduce_sell_in(item)
-      end
-      if item.sell_in < 0 && item.name != CONJURED
-        if item.name != AGED_BRIE
-          if item.name != BACKSTAGE_PASS
-            if item.quality > 0
-              if item.name != SULFURAS
-                change_quality(item, "subtract", 1)
-              end
-            end
-          else
-            change_quality(item, "subtract", item.quality)
-          end
-        else
-          if item.quality < 50 && item.name != CONJURED
-            change_quality(item, "add", 1)
-          end
         end
       end
     end
