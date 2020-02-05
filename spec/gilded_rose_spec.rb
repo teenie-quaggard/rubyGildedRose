@@ -72,22 +72,26 @@ describe GildedRose do
         10 days or less to SellIn: +2 quality points
         11+ days to SellIn: +1 quality point
         +1 days after SellIn: 0 quality points" do
-      items = [Item.new("Backstage passes to a TAFKAL80ETC concert", 20, 10), 
-        Item.new("Backstage passes to a TAFKAL80ETC concert", 10, 10), 
-        Item.new("Backstage passes to a TAFKAL80ETC concert", 5, 10),
-        Item.new("Backstage passes to a TAFKAL80ETC concert", 0, 10)]
+      twentyDaysToSellIn = Item.new("Backstage passes to a TAFKAL80ETC concert", 20, 10)
+      tenDaysToSellIn = Item.new("Backstage passes to a TAFKAL80ETC concert", 10, 10)
+      fiveDaysToSellIn = Item.new("Backstage passes to a TAFKAL80ETC concert", 5, 10)
+      afterSellIn = Item.new("Backstage passes to a TAFKAL80ETC concert", 0, 10)
+      
+      items = [twentyDaysToSellIn, tenDaysToSellIn, fiveDaysToSellIn, afterSellIn]
       GildedRose.new(items).update_quality()
-      expect(items[0].quality).to eq (11)
-      expect(items[1].quality).to eq (12)
-      expect(items[2].quality).to eq (13)
-      expect(items[3].quality).to eq (0)
+      expect(twentyDaysToSellIn.quality).to eq (11)
+      expect(tenDaysToSellIn.quality).to eq (12)
+      expect(fiveDaysToSellIn.quality).to eq (13)
+      expect(afterSellIn.quality).to eq (0)
     end
   
     it "conjured items degrade in Quality twice as fast as normal items" do
-      items = [Item.new("conjured", 50, 50), Item.new("conjured", -1, 50)]
+      conjured_item = Item.new("conjured", 50, 50)
+      expired_item = Item.new("conjured", -1, 50)
+      items = [conjured_item, expired_item]
       GildedRose.new(items).update_quality()
-      expect(items[0].quality).to eq (48)
-      expect(items[1].quality).to eq (46)
+      expect(conjured_item.quality).to eq (48)
+      expect(expired_item.quality).to eq (46)
     end
 
     it "conjured items reduce by 1 in sell_in date when update_quality is run" do
