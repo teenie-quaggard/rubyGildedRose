@@ -1,68 +1,90 @@
+
 class GildedRose
 
   def initialize(items)
     @items = items
   end
 
+  CONJURED = "conjured"
+  AGED_BRIE = "Aged Brie"
+  BACKSTAGE_PASS = "Backstage passes to a TAFKAL80ETC concert"
+  SULFURAS = "Sulfuras, Hand of Ragnaros"
+
   def reduce_sell_in(item)
     item.sell_in -= 1
   end
 
-  def change_quality(item, action, value)
-    action == "add" ? item.quality += value : item.quality -= value
+  # NEED: change this to a hash to remove argument order dependency?
+  def change_quality(item, action, value=0)
+    case action
+      when "add"
+        item.quality += value
+      when "subtract"
+        item.quality -= value
+      when "zero"
+        item.quality -= item.quality
+      when "max"
+        item.quality = 50
+      end
+  end
+
+  def conjuredItem(item)
+    item.sell_in >= 0 ? change_quality(item, "subtract", 2) : change_quality(item, "subtract", 4)
+  end
+
+  def backstagePass(item)
+    if item.sell_in < 11 && item.quality < 50
+        change_quality(item, "add", 1)
+    end
+    if item.sell_in < 6 && item.quality < 50
+        change_quality(item, "add", 1)
+    end
+      
   end
 
   def update_quality()
 
     @items.each do |item|
-      if item.name == "conjured"
-        item.sell_in >= 0 ? change_quality(item, "subtract", 2) : change_quality(item, "subtract", 4)
-      elsif item.name != "Aged Brie" and item.name != "Backstage passes to a TAFKAL80ETC concert"
+      if item.name == CONJURED
+        conjuredItem(item)
+      elsif item.name != AGED_BRIE and item.name != BACKSTAGE_PASS
         if item.quality > 0
-          if item.name != "Sulfuras, Hand of Ragnaros"
+          if item.name != SULFURAS
             change_quality(item, "subtract", 1)
           end
         end
       else
-        if item.quality < 50 && item.name != "conjured"
+        if item.quality < 50 && item.name != CONJURED
           change_quality(item, "add", 1)
-          if item.name == "Backstage passes to a TAFKAL80ETC concert"
-            if item.sell_in < 11
-              if item.quality < 50
-                change_quality(item, "add", 1)
-              end
-            end
-            if item.sell_in < 6
-              if item.quality < 50
-                change_quality(item, "add", 1)
-              end
-            end
+          if item.name == BACKSTAGE_PASS
+            backstagePass(item)
           end
         end
       end
-      if item.name != "Sulfuras, Hand of Ragnaros"
+      if item.name != SULFURAS
         reduce_sell_in(item)
       end
-      if item.sell_in < 0 && item.name != "conjured"
-        if item.name != "Aged Brie"
-          if item.name != "Backstage passes to a TAFKAL80ETC concert"
+      if item.sell_in < 0 && item.name != CONJURED
+        if item.name != AGED_BRIE
+          if item.name != BACKSTAGE_PASS
             if item.quality > 0
-              if item.name != "Sulfuras, Hand of Ragnaros"
+              if item.name != SULFURAS
                 change_quality(item, "subtract", 1)
               end
             end
           else
-            item.quality = item.quality - item.quality
+            change_quality(item, "subtract", item.quality)
           end
         else
-          if item.quality < 50 && item.name != "conjured"
-            increase_quality(item)
+          if item.quality < 50 && item.name != CONJURED
+            change_quality(item, "add", 1)
           end
         end
       end
     end
   end
 end
+
 
 class Item
   attr_accessor :name, :sell_in, :quality
