@@ -54,17 +54,21 @@ end
 
 class ConjuredItem < Item
   def update_conjured(item)
-    item.sell_in >= 0 ? HelperMethods.change_quality(item, "subtract", 2) : HelperMethods.change_quality(item, "subtract", 4)
+    item.sell_in >= 0 ? 
+    HelperMethods.change_quality(item, "subtract", 2) : 
+    HelperMethods.change_quality(item, "subtract", 4)
+    HelperMethods.quality_check(item)
   end
 end
 
 class NormalItem < Item
   def update_normal(item)
-    if item.sell_in < 0 and self.quality > 2
-      HelperMethods.change_quality(self, "subtract", 2)
-    elsif item.quality.between?(MIN_QUALITY + 1, MAX_QUALITY)
-      HelperMethods.change_quality(self, "subtract", 1)
+    if item.sell_in < 0 and item.quality > 2
+      HelperMethods.change_quality(item, "subtract", 2)
+    elsif item.quality.between?(MIN_QUALITY + 1, MAX_QUALITY - 1)
+      HelperMethods.change_quality(item, "subtract", 1)
     end
+    HelperMethods.quality_check(item)
   end
 end
 
@@ -77,9 +81,8 @@ end
 
 class BrieItem < Item
  def update_brie(item)
-    item.quality >= MAX_QUALITY ? 
-    HelperMethods.change_quality(item, "set", MAX_QUALITY) :
-    HelperMethods.change_quality(item, "add", 1)
+    HelperMethods.change_quality(item, "add", 1) if item.quality < MAX_QUALITY
+    HelperMethods.quality_check(item)
   end
 end
 
@@ -96,13 +99,26 @@ class BackstagePassItem < Item
     else
       item
     end
-    sell_in = item.sell_in 
+    HelperMethods.quality_check(item)
   end
 end
 
 module HelperMethods
   def self.check_max_quality(item)
-    item.quality > MAX_QUALITY ? item.quality = MAX_QUALITY : item.quality
+    item.quality > MAX_QUALITY ? 
+    change_quality(item, "set", MAX_QUALITY) : 
+    item.quality
+  end
+
+  def self.check_min_quality(item)
+    item.quality < MIN_QUALITY ? 
+    change_quality(item, "set", MIN_QUALITY) : 
+    item.quality
+  end
+
+  def self.quality_check(item)
+    check_max_quality(item)
+    check_min_quality(item)
   end
 
   def self.change_quality(item, action, value=0)

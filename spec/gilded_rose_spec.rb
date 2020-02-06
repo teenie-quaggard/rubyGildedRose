@@ -36,10 +36,18 @@ describe GildedRose do
       expect(items[0].quality).to eq (0)
     end
 
-    xit "if item is provided a negative quality value, it will return a quality of 0" do
-      items = [Item.new("foo", 0, -1)]
+    it "if item any item that is not Sulfuras is provided a negative quality value, it will return a quality of 0" do
+      normalItem = NormalItem.new("foo", 50, -1)
+      brieItem = BrieItem.new("Aged Brie", 50, -3)
+      passItem = BackstagePassItem.new("Backstage passes to a TAFKAL80ETC concert", 50, -55)
+      conjuredItem = ConjuredItem.new("conjured", 50, -50)
+
+      items = [normalItem, brieItem, passItem, conjuredItem]
       GildedRose.new(items).update_shop()
-      expect(items[0].quality).to eq (0)
+      expect(normalItem.quality).to eq (0)
+      expect(brieItem.quality).to eq (0)
+      expect(passItem.quality).to eq (0)
+      expect(conjuredItem.quality).to eq (0)
     end
 
     it "Aged Brie increases in quality the older it gets" do
@@ -54,10 +62,18 @@ describe GildedRose do
       expect(items[0].quality).to eq (50)
     end
 
-    xit "if an item is provided with a quality value over 50, it will return a quality of 50" do
-      items = [Item.new("foo", 50, 55)]
+    it "if any item that is not Sulfuras is provided with a quality value over 50, it will return a quality of 50" do
+      normalItem = NormalItem.new("foo", 50, 55)
+      brieItem = BrieItem.new("Aged Brie", 50, 55)
+      passItem = BackstagePassItem.new("Backstage passes to a TAFKAL80ETC concert", 50, 55)
+      conjuredItem = ConjuredItem.new("conjured", 50, 50)
+
+      items = [normalItem, brieItem, passItem, conjuredItem]
       GildedRose.new(items).update_shop()
-      expect(items[0].quality).to eq (50)
+      expect(normalItem.quality).to eq (50)
+      expect(brieItem.quality).to eq (50)
+      expect(passItem.quality).to eq (50)
+      expect(conjuredItem.quality).to eq (48)
     end
 
     it "Sulfuras has quality of 80 that never decreases" do
