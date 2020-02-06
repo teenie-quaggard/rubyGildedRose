@@ -7,70 +7,7 @@ MIN_QUALITY = 0
 MAX_QUALITY = 50
 LEGENDARY_QUALITY = 80
 
-class GildedRose
-
-  def initialize(items)
-    @items = items
-  end
-
-  def update_shop
-    @items.each do |item|
-      HelperMethods.reduce_sell_in(item)
-      update_items(item)
-    end
-  end
-
-  def update_items(item)
-    if item.name == CONJURED
-      item.update_conjured(item)
-    elsif item.name == SULFURAS
-      sulfuras_item(item)
-    elsif item.name == AGED_BRIE
-      brie_item(item)
-    elsif item.name == BACKSTAGE_PASS
-      backstage_pass(item)
-    else
-      item.update_quality()
-    end
-  end
-
-  # def conjured_item(item)
-  #   item.sell_in >= 0 ? HelperMethods.change_quality(item, "subtract", 2) : HelperMethods.change_quality(item, "subtract", 4)
-  # end
-
-  def sulfuras_item(item)
-    HelperMethods.change_quality(item, "set", LEGENDARY_QUALITY)
-    HelperMethods.set_sell_in(item, 0)
-  end
-
-  def brie_item(item)
-    item.quality >= MAX_QUALITY ? 
-    HelperMethods.change_quality(item, "set", MAX_QUALITY) :
-    HelperMethods.change_quality(item, "add", 1)
-  end
-
-  def backstage_pass(item)
-    if item.sell_in < 0
-      HelperMethods.change_quality(item, "set", MIN_QUALITY)
-    elsif item.sell_in <= 5
-      HelperMethods.change_quality(item, "add", 3)
-    elsif item.sell_in <= 10
-      HelperMethods.change_quality(item, "add", 2)
-    elsif item.sell_in > 10
-      HelperMethods.change_quality(item, "add", 1)
-    else
-      item
-    end 
-  end
-
-end
-
-
 module HelperMethods
-  def self.reduce_sell_in(item)
-    item.sell_in -= 1
-  end
-
   def self.check_max_quality(item)
     if item.name == SULFURAS
       item.quality = LEGENDARY_QUALITY
@@ -96,7 +33,37 @@ module HelperMethods
   def self.set_sell_in(item, value)
     item.sell_in = value
   end
+end
 
+class GildedRose
+  def initialize(items)
+    @items = items
+  end
+
+  def update_shop
+    @items.each do |item|
+      reduce_sell_in(item)
+      update_items(item)
+    end
+  end
+
+  def update_items(item)
+    if item.name == CONJURED
+      item.update_conjured(item)
+    elsif item.name == SULFURAS
+      item.update_sulfuras(item)
+    elsif item.name == AGED_BRIE
+      item.update_brie(item)
+    elsif item.name == BACKSTAGE_PASS
+      item.update_backstage_pass(item)
+    else
+      item.update_normal(item)
+    end
+  end
+
+  def reduce_sell_in(item)
+    item.sell_in -= 1
+  end
 end
 
 class Item
@@ -114,25 +81,48 @@ class Item
 end
 
 class ConjuredItem < Item
-  def initialize(name, sell_in, quality)
-    super(name, sell_in, quality)
-  end
-
   def update_conjured(item)
     item.sell_in >= 0 ? HelperMethods.change_quality(item, "subtract", 2) : HelperMethods.change_quality(item, "subtract", 4)
   end
 end
 
 class NormalItem < Item
-  def initialize(name, sell_in, quality)
-    super(name, sell_in, quality)
-  end
-
-  def update_quality
-    if self.sell_in < 0 and self.quality > 2
+  def update_normal(item)
+    if item.sell_in < 0 and self.quality > 2
       HelperMethods.change_quality(self, "subtract", 2)
-    elsif self.quality.between?(MIN_QUALITY + 1, MAX_QUALITY)
+    elsif item.quality.between?(MIN_QUALITY + 1, MAX_QUALITY)
       HelperMethods.change_quality(self, "subtract", 1)
     end
+  end
+end
+
+class SulfurasItem < Item
+  def update_sulfuras(item)
+    HelperMethods.change_quality(item, "set", LEGENDARY_QUALITY)
+    HelperMethods.set_sell_in(item, 0)
+  end
+end
+
+class BrieItem < Item
+ def update_brie(item)
+    item.quality >= MAX_QUALITY ? 
+    HelperMethods.change_quality(item, "set", MAX_QUALITY) :
+    HelperMethods.change_quality(item, "add", 1)
+  end
+end
+
+class BackstagePassItem < Item
+  def update_backstage_pass(item)
+    if item.sell_in < 0
+      HelperMethods.change_quality(item, "set", MIN_QUALITY)
+    elsif item.sell_in <= 5
+      HelperMethods.change_quality(item, "add", 3)
+    elsif item.sell_in <= 10
+      HelperMethods.change_quality(item, "add", 2)
+    elsif item.sell_in > 10
+      HelperMethods.change_quality(item, "add", 1)
+    else
+      item
+    end 
   end
 end

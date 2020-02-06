@@ -43,13 +43,13 @@ describe GildedRose do
     end
 
     it "Aged Brie increases in quality the older it gets" do
-      items = [Item.new("Aged Brie", 20, 10)]
+      items = [BrieItem.new("Aged Brie", 20, 10)]
       GildedRose.new(items).update_shop()
       expect(items[0].quality).to eq (11)
     end
 
     it "the quality of an item is never more than 50" do
-      items = [Item.new("Aged Brie", 50, 50)]
+      items = [BrieItem.new("Aged Brie", 50, 50)]
       GildedRose.new(items).update_shop()
       expect(items[0].quality).to eq (50)
     end
@@ -61,7 +61,7 @@ describe GildedRose do
     end
 
     it "Sulfuras has quality of 80 that never decreases" do
-      items = [Item.new("Sulfuras, Hand of Ragnaros", 0, 80)]
+      items = [SulfurasItem.new("Sulfuras, Hand of Ragnaros", 0, 80)]
       GildedRose.new(items).update_shop()
       expect(items[0].quality).to eq (80)
       expect(items[0].sell_in).to eq (0)
@@ -72,10 +72,10 @@ describe GildedRose do
         10 days or less to SellIn: +2 quality points
         11+ days to SellIn: +1 quality point
         +1 days after SellIn: 0 quality points" do
-      twentyDaysToSellIn = Item.new("Backstage passes to a TAFKAL80ETC concert", 20, 10)
-      tenDaysToSellIn = Item.new("Backstage passes to a TAFKAL80ETC concert", 10, 10)
-      fiveDaysToSellIn = Item.new("Backstage passes to a TAFKAL80ETC concert", 5, 10)
-      afterSellIn = Item.new("Backstage passes to a TAFKAL80ETC concert", 0, 10)
+      twentyDaysToSellIn = BackstagePassItem.new("Backstage passes to a TAFKAL80ETC concert", 20, 10)
+      tenDaysToSellIn = BackstagePassItem.new("Backstage passes to a TAFKAL80ETC concert", 10, 10)
+      fiveDaysToSellIn = BackstagePassItem.new("Backstage passes to a TAFKAL80ETC concert", 5, 10)
+      afterSellIn = BackstagePassItem.new("Backstage passes to a TAFKAL80ETC concert", 0, 10)
       
       items = [twentyDaysToSellIn, tenDaysToSellIn, fiveDaysToSellIn, afterSellIn]
       GildedRose.new(items).update_shop()
