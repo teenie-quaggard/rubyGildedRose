@@ -1,67 +1,46 @@
-class GildedRose
+CONJURED = "conjured"
+AGED_BRIE = "Aged Brie"
+BACKSTAGE_PASS = "Backstage passes to a TAFKAL80ETC concert"
+SULFURAS = "Sulfuras, Hand of Ragnaros"
 
+MIN_QUALITY = 0
+MAX_QUALITY = 50
+LEGENDARY_QUALITY = 80
+
+class GildedRose
   def initialize(items)
     @items = items
   end
 
-  def update_quality()
+  def update_shop
     @items.each do |item|
-      if item.name == "conjured"
-        if item.sell_in >= 0
-          item.quality = item.quality - 2
-        elsif item.sell_in < 0
-          item.quality = item.quality - 4
-        end
-      elsif item.name != "Aged Brie" and item.name != "Backstage passes to a TAFKAL80ETC concert"
-        if item.quality > 0
-          if item.name != "Sulfuras, Hand of Ragnaros"
-            item.quality = item.quality - 1
-          end
-        end
-      else
-        if item.quality < 50 && item.name != "conjured"
-          item.quality = item.quality + 1
-          if item.name == "Backstage passes to a TAFKAL80ETC concert"
-            if item.sell_in < 11
-              if item.quality < 50
-                item.quality = item.quality + 1
-              end
-            end
-            if item.sell_in < 6
-              if item.quality < 50
-                item.quality = item.quality + 1
-              end
-            end
-          end
-        end
-      end
-      if item.name != "Sulfuras, Hand of Ragnaros"
-        item.sell_in = item.sell_in - 1
-      end
-      if item.sell_in < 0 && item.name != "conjured"
-        if item.name != "Aged Brie"
-          if item.name != "Backstage passes to a TAFKAL80ETC concert"
-            if item.quality > 0
-              if item.name != "Sulfuras, Hand of Ragnaros"
-                item.quality = item.quality - 1
-              end
-            end
-          else
-            item.quality = item.quality - item.quality
-          end
-        else
-          if item.quality < 50 && item.name != "conjured"
-            item.quality = item.quality + 1
-          end
-        end
-      end
+      reduce_sell_in(item)
+      update_items(item)
+    end
+  end
+
+  def reduce_sell_in(item)
+    item.sell_in -= 1
+  end
+
+  def update_items(item)
+    case item.name
+    when CONJURED
+      item.update_conjured(item)
+    when SULFURAS
+      item.update_sulfuras(item)
+    when AGED_BRIE
+      item.update_brie(item)
+    when BACKSTAGE_PASS
+      item.update_backstage_pass(item)
+    else
+      item.update_normal(item)
     end
   end
 end
 
 class Item
   attr_accessor :name, :sell_in, :quality
-
   def initialize(name, sell_in, quality)
     @name = name
     @sell_in = sell_in
@@ -70,5 +49,76 @@ class Item
 
   def to_s()
     "#{@name}, #{@sell_in}, #{@quality}"
+  end
+end
+
+class ConjuredItem < Item
+  def update_conjured(item)
+    item.sell_in >= 0 ? HelperMethods.change_quality(item, "subtract", 2) : HelperMethods.change_quality(item, "subtract", 4)
+  end
+end
+
+class NormalItem < Item
+  def update_normal(item)
+    if item.sell_in < 0 and self.quality > 2
+      HelperMethods.change_quality(self, "subtract", 2)
+    elsif item.quality.between?(MIN_QUALITY + 1, MAX_QUALITY)
+      HelperMethods.change_quality(self, "subtract", 1)
+    end
+  end
+end
+
+class SulfurasItem < Item
+  def update_sulfuras(item)
+    HelperMethods.change_quality(item, "set", LEGENDARY_QUALITY)
+    HelperMethods.set_sell_in(item, 0)
+  end
+end
+
+class BrieItem < Item
+ def update_brie(item)
+    item.quality >= MAX_QUALITY ? 
+    HelperMethods.change_quality(item, "set", MAX_QUALITY) :
+    HelperMethods.change_quality(item, "add", 1)
+  end
+end
+
+class BackstagePassItem < Item
+  def update_backstage_pass(item)
+    if item.sell_in < 0
+      HelperMethods.change_quality(item, "set", MIN_QUALITY)
+    elsif item.sell_in <= 5
+      HelperMethods.change_quality(item, "add", 3)
+    elsif item.sell_in <= 10
+      HelperMethods.change_quality(item, "add", 2)
+    elsif item.sell_in > 10
+      HelperMethods.change_quality(item, "add", 1)
+    else
+      item
+    end
+    sell_in = item.sell_in 
+  end
+end
+
+module HelperMethods
+  def self.check_max_quality(item)
+    item.quality > MAX_QUALITY ? item.quality = MAX_QUALITY : item.quality
+  end
+
+  def self.change_quality(item, action, value=0)
+    case action
+    when "add"
+      item.quality += value
+    when "subtract"
+      item.quality -= value
+    when "set"
+      item.quality = value
+    else
+      item
+    end
+  end
+
+  def self.set_sell_in(item, value)
+    item.sell_in = value
   end
 end
