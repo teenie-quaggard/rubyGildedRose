@@ -22,7 +22,7 @@ class GildedRose
 
   def update_items(item)
     if item.name == CONJURED
-      conjured_item(item)
+      item.update_conjured(item)
     elsif item.name == SULFURAS
       sulfuras_item(item)
     elsif item.name == AGED_BRIE
@@ -34,9 +34,9 @@ class GildedRose
     end
   end
 
-  def conjured_item(item)
-    item.sell_in >= 0 ? HelperMethods.change_quality(item, "subtract", 2) : HelperMethods.change_quality(item, "subtract", 4)
-  end
+  # def conjured_item(item)
+  #   item.sell_in >= 0 ? HelperMethods.change_quality(item, "subtract", 2) : HelperMethods.change_quality(item, "subtract", 4)
+  # end
 
   def sulfuras_item(item)
     HelperMethods.change_quality(item, "set", LEGENDARY_QUALITY)
@@ -98,7 +98,6 @@ module HelperMethods
   end
 
 end
-  
 
 class Item
   attr_accessor :name, :sell_in, :quality
@@ -114,6 +113,16 @@ class Item
   end
 end
 
+class ConjuredItem < Item
+  def initialize(name, sell_in, quality)
+    super(name, sell_in, quality)
+  end
+
+  def update_conjured(item)
+    item.sell_in >= 0 ? HelperMethods.change_quality(item, "subtract", 2) : HelperMethods.change_quality(item, "subtract", 4)
+  end
+end
+
 class NormalItem < Item
   def initialize(name, sell_in, quality)
     super(name, sell_in, quality)
@@ -126,5 +135,4 @@ class NormalItem < Item
       HelperMethods.change_quality(self, "subtract", 1)
     end
   end
-
 end

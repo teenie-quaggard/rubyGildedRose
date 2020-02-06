@@ -86,8 +86,8 @@ describe GildedRose do
     end
   
     it "conjured items degrade in Quality twice as fast as normal items" do
-      conjured_item = Item.new("conjured", 50, 50)
-      expired_item = Item.new("conjured", -1, 50)
+      conjured_item = ConjuredItem.new("conjured", 50, 50)
+      expired_item = ConjuredItem.new("conjured", -1, 50)
       items = [conjured_item, expired_item]
       GildedRose.new(items).update_shop()
       expect(conjured_item.quality).to eq (48)
@@ -95,7 +95,7 @@ describe GildedRose do
     end
 
     it "conjured items reduce by 1 in sell_in date when update_shop is run" do
-      items = [Item.new("conjured", 50, 50)]
+      items = [ConjuredItem.new("conjured", 50, 50)]
       GildedRose.new(items).update_shop()
       expect(items[0].sell_in).to eq (49)
     end
