@@ -40,3 +40,4 @@ Questions:
 1. How to pass module methods to a class (include is not working)?
 2. What is the convention for storing constants in Ruby?
 3. Explanation of 'self' in Ruby
+4. How far should methods be modularized?
