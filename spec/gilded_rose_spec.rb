@@ -6,31 +6,31 @@ describe GildedRose do
   describe "item properties after running #update_shop" do
 
     it "does not change the name" do
-      items = [Item.new("foo", 0, 0)]
+      items = [NormalItem.new("foo", 0, 0)]
       GildedRose.new(items).update_shop()
       expect(items[0].name).to eq "foo"
     end
 
     it "an item's SellIn value lowers by one everyday" do
-      items = [Item.new("foo", 10, 0)]
+      items = [NormalItem.new("foo", 10, 0)]
       GildedRose.new(items).update_shop()
       expect(items[0].sell_in).to eq(9)
     end
 
     it "a regular item's quality value decreases by 1 daily" do
-      items = [Item.new("foo", 10, 10)]
+      items = [NormalItem.new("foo", 10, 10)]
       GildedRose.new(items).update_shop()
       expect(items[0].quality).to eq(9)
     end
 
     it "quality degrades twice as fast after sell by date" do
-      items = [Item.new("foo", -1, 10)]
+      items = [NormalItem.new("foo", -1, 10)]
       GildedRose.new(items).update_shop()
       expect(items[0].quality).to eq (8)
     end
 
     it "quality should never be negative" do
-      items = [Item.new("foo", 0, 0)]
+      items = [NormalItem.new("foo", 0, 0)]
       GildedRose.new(items).update_shop()
       GildedRose.new(items).update_shop()
       expect(items[0].quality).to eq (0)

@@ -30,7 +30,7 @@ class GildedRose
     elsif item.name == BACKSTAGE_PASS
       backstage_pass(item)
     else
-      normal_item(item)
+      item.update_quality()
     end
   end
 
@@ -63,15 +63,8 @@ class GildedRose
     end 
   end
 
-  def normal_item(item)
-    if item.sell_in < 0 and item.quality > 2
-      HelperMethods.change_quality(item, "subtract", 2)
-    elsif item.quality.between?(MIN_QUALITY + 1, MAX_QUALITY)
-      HelperMethods.change_quality(item, "subtract", 1)
-    end
-  end
-  
 end
+
 
 module HelperMethods
   def self.reduce_sell_in(item)
@@ -103,6 +96,7 @@ module HelperMethods
   def self.set_sell_in(item, value)
     item.sell_in = value
   end
+
 end
   
 
@@ -118,4 +112,19 @@ class Item
   def to_s()
     "#{@name}, #{@sell_in}, #{@quality}"
   end
+end
+
+class NormalItem < Item
+  def initialize(name, sell_in, quality)
+    super(name, sell_in, quality)
+  end
+
+  def update_quality
+    if self.sell_in < 0 and self.quality > 2
+      HelperMethods.change_quality(self, "subtract", 2)
+    elsif self.quality.between?(MIN_QUALITY + 1, MAX_QUALITY)
+      HelperMethods.change_quality(self, "subtract", 1)
+    end
+  end
+
 end
