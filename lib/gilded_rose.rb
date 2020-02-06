@@ -7,34 +7,6 @@ MIN_QUALITY = 0
 MAX_QUALITY = 50
 LEGENDARY_QUALITY = 80
 
-module HelperMethods
-  def self.check_max_quality(item)
-    if item.name == SULFURAS
-      item.quality = LEGENDARY_QUALITY
-    else
-      item.quality > MAX_QUALITY ? item.quality = MAX_QUALITY : item.quality
-    end
-  end
-
-  def self.change_quality(item, action, value=0)
-    check_max_quality(item)
-    case action
-      when "add"
-        item.quality += value
-      when "subtract"
-        item.quality -= value
-      when "set"
-        item.quality = value
-      else
-        item
-    end
-  end
-
-  def self.set_sell_in(item, value)
-    item.sell_in = value
-  end
-end
-
 class GildedRose
   def initialize(items)
     @items = items
@@ -47,28 +19,28 @@ class GildedRose
     end
   end
 
+  def reduce_sell_in(item)
+    item.sell_in -= 1
+  end
+
   def update_items(item)
-    if item.name == CONJURED
+    case item.name
+    when CONJURED
       item.update_conjured(item)
-    elsif item.name == SULFURAS
+    when SULFURAS
       item.update_sulfuras(item)
-    elsif item.name == AGED_BRIE
+    when AGED_BRIE
       item.update_brie(item)
-    elsif item.name == BACKSTAGE_PASS
+    when BACKSTAGE_PASS
       item.update_backstage_pass(item)
     else
       item.update_normal(item)
     end
   end
-
-  def reduce_sell_in(item)
-    item.sell_in -= 1
-  end
 end
 
 class Item
   attr_accessor :name, :sell_in, :quality
-
   def initialize(name, sell_in, quality)
     @name = name
     @sell_in = sell_in
@@ -123,6 +95,30 @@ class BackstagePassItem < Item
       HelperMethods.change_quality(item, "add", 1)
     else
       item
-    end 
+    end
+    sell_in = item.sell_in 
+  end
+end
+
+module HelperMethods
+  def self.check_max_quality(item)
+    item.quality > MAX_QUALITY ? item.quality = MAX_QUALITY : item.quality
+  end
+
+  def self.change_quality(item, action, value=0)
+    case action
+    when "add"
+      item.quality += value
+    when "subtract"
+      item.quality -= value
+    when "set"
+      item.quality = value
+    else
+      item
+    end
+  end
+
+  def self.set_sell_in(item, value)
+    item.sell_in = value
   end
 end
