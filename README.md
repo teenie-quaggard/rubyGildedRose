@@ -1,6 +1,6 @@
 ## Refactor of the Gilded Rose kata in Ruby
-
 Forked from https://github.com/emilybache/GildedRose-Refactoring-Kata
+
 
 ──────────────▒███░───░████████▒ 
 ───────────█████▒░█████░▒▒▒▒▒▒█████ 
@@ -35,3 +35,8 @@ Forked from https://github.com/emilybache/GildedRose-Refactoring-Kata
 ───────────────████ 
 ───────────────█▒█ 
 ───────────────███
+
+Questions:
+1. How to pass module methods to a class (include is not working)?
+2. What is the convention for storing constants in Ruby?
+3. Explanation of 'self' in Ruby
