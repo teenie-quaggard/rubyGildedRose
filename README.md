@@ -1,6 +1,18 @@
 ## Refactor of the Gilded Rose kata in Ruby
 Forked from https://github.com/emilybache/GildedRose-Refactoring-Kata
 
+The purpose of this kata was to learn the basics of Ruby while also implementing the principles of test driven development with an inherited code base. 
+
+### What I've learned
+- Basics of Ruby syntax
+- TDD cycle
+
+## Questions I still have
+1. How to pass module methods to a class (include is not working)?
+2. What is the convention for storing constants in Ruby?
+3. Explanation of 'self' in Ruby
+4. How far should methods be modularized?
+
 
 ──────────────▒███░───░████████▒ 
 ───────────█████▒░█████░▒▒▒▒▒▒█████ 
@@ -36,8 +48,3 @@ Forked from https://github.com/emilybache/GildedRose-Refactoring-Kata
 ───────────────█▒█ 
 ───────────────███
 
-Questions:
-1. How to pass module methods to a class (include is not working)?
-2. What is the convention for storing constants in Ruby?
-3. Explanation of 'self' in Ruby
-4. How far should methods be modularized?
